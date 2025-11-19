@@ -1,0 +1,128 @@
+body{
+    background: aliceblue;
+}
+
+
+.panel {
+    background-color: #ffffff;       /* White background */
+    border-radius: 12px;             /* Rounded corners */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Soft shadow */
+    padding: 20px;                   /* Inner spacing */
+    margin: 15px 0;                  /* Spacing between panels */
+    border: 1px solid #e0e0e0;      /* Light gray border */
+    transition: all 0.2s ease;       /* Smooth hover effect */
+}
+
+.panel:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* Slightly larger shadow on hover */
+    transform: translateY(-2px);            /* Subtle lift effect */
+}
+
+.row-separator {
+    padding: 15px 0;                  /* Vertical padding */
+    border-bottom: 1px solid #e0e0e0; /* Light gray separator line */
+}
+
+.circle-button {
+    width: 50px;               /* Set width */
+    height: 50px;              /* Set height equal to width */
+    border-radius: 50%;        /* Makes it a circle */
+    display: inline-flex;      /* Center content */
+    justify-content: center;   /* Center horizontally */
+    align-items: center;       /* Center vertically */
+    border: none;              /* Optional: remove default border */
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;               /* Text/icon color */
+    font-size: 18px;            /* Text size */
+    cursor: pointer;            /* Pointer on hover */
+    transition: all 0.2s ease; /* Smooth hover effect */
+}
+
+.circle-button:hover {
+    background-color: #0056b3;  /* Darker on hover */
+    transform: scale(1.1);      /* Slight zoom on hover */
+}
+
+.app-content{
+    max-width: 1200px;        /* Maximum width for large screens */
+    margin: 20px auto;        /* Center horizontally with top/bottom margin */
+    padding: 20px;            /* Inner padding */
+}
+
+.footer {
+    width: 100%;
+    background-color: #343a40; /* Dark color */
+    color: #ffffff;            /* White text */
+    padding: 15px 20px;        /* Padding */
+    text-align: center;
+    font-size: 14px;
+    position: fixed;           /* Stick to viewport */
+    bottom: 0;                 /* Align to bottom */
+    left: 0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Optional top shadow */
+    z-index: 1000;             /* Ensure it’s on top */
+}
+
+.footer-links {
+    margin-top: 5px;
+}
+
+.footer-links a {
+    color: #ffffff;
+    margin: 0 10px;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #17a2b8;  /* Highlight on hover */
+}
+
+.footer-signature {
+    margin-top: 5px;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 10px;
+    border: 2px solid;
+    border-radius: 8px;
+    text-align: center;
+
+    /* Gradient border effect */
+    border-image-slice: 1;
+    border-width: 2px;
+    border-image-source: linear-gradient(
+        270deg,
+        #ff0000,
+        #ff9900,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #0000ff,
+        #9900ff,
+        #ff00ff,
+        #ff0000
+    );
+
+    /* Animated glowing text-shadow */
+    animation: rainbow-glow 3s linear infinite;
+}
+
+@keyframes rainbow-glow {
+    0% {
+        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff9900, 0 0 15px #ffff00;
+    }
+    25% {
+        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ffff, 0 0 15px #0000ff;
+    }
+    50% {
+        text-shadow: 0 0 5px #9900ff, 0 0 10px #ff00ff, 0 0 15px #ff0000;
+    }
+    75% {
+        text-shadow: 0 0 5px #ff9900, 0 0 10px #ffff00, 0 0 15px #00ff00;
+    }
+    100% {
+        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff9900, 0 0 15px #ffff00;
+    }
+}
