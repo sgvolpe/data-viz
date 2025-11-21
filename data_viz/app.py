@@ -11,15 +11,34 @@ import plotly.graph_objects as go
 import logging
 from pathlib import Path
 
+from schemas.report import Report
+
 app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP,
                           "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
                           ],
-    title="Data Viz"
+    title="Data Viz",
+    meta_tags=[
+        {"name": "description", "content": "A beautiful data report tool."},
+
+        # ---- Open Graph (for Slack, LinkedIn, Facebook, WhatsApp) ----
+        {"property": "og:title", "content": "My Reporting App"},
+        {"property": "og:description", "content": "Generate beautiful PDF reports instantly."},
+        {"property": "og:type", "content": "website"},
+        {"property": "og:url", "content": "https://yourdomain.com"},
+        {"property": "og:image", "content": "https://yourdomain.com/assets/share-preview.png"},
+
+        # ---- Twitter Card ----
+        {"name": "twitter:card", "content": "summary_large_image"},
+        {"name": "twitter:title", "content": "My Reporting App"},
+        {"name": "twitter:description", "content": "Generate beautiful PDF reports instantly."},
+        {"name": "twitter:image", "content": "https://yourdomain.com/assets/share-preview.png"},
+    ]
 )
 
 initial_file_path = Path() / "samples" / "test_file.csv"
+initial_configuration_path = Path() / "samples" / "dashboard_1.json"
 components = {"todo": "todo"}
 
 # ---------- Layout ----------
@@ -36,6 +55,7 @@ navbar = dbc.Navbar(
         dbc.Collapse(
             dbc.Nav(
                 [
+                    dbc.NavItem(dbc.NavLink("Download PDF", id="download-pdf-btn",href="#", className="nav-link")),
                     dbc.NavItem(dbc.NavLink("Home", href="#", className="nav-link")),
                     dbc.NavItem(dbc.NavLink("About", href="#", className="nav-link")),
                     dbc.NavItem(dbc.NavLink("GitHub", href="https://github.com/", target="_blank")),
@@ -112,8 +132,8 @@ app.layout = html.Div(
                                                 "borderRadius": "10px", "textAlign": "center", "margin": "10px"},
                                             multiple=False
                                         ),
-                                        dcc.Store(id="stored-data"),
-                                        dcc.Store(id="dashboard-state", data={"tabs": []}),
+                                        dcc.Store(id="stored-data", storage_type="session"),
+                                        dcc.Store(id="dashboard-state", data={"tabs": []}, storage_type="session"),
                                         html.Div(id="file-info-div",
                                                  style={"fontWeight": "bold", "marginTop": "10px"}), ]
                                 ),
@@ -219,6 +239,7 @@ app.layout = html.Div(
             ],
             className="app-content"
         ),
+        dcc.Download(id="download-pdf"),
         footer
 
     ]
@@ -316,7 +337,7 @@ def build_chart(
         dbc.Card: Dash card containing the chart.
     """
 
-    print(f"""
+    logging.debug(f"""
     BUILDING CHART:
     {df.shape}
     {chart_type=}
@@ -327,11 +348,11 @@ def build_chart(
 """)
     fig = go.Figure()
 
-    print(f"{layout=}")
+    logging.debug(f"{layout=}")
 
     # __________ SETUP DEFAULTS ____________ #
     if layout is None: layout = {}
-    print(f"{layout=}")
+    logging.debug(f"{layout=}")
 
     y1 = y1 or []
     y2 = y2 or []
@@ -879,6 +900,28 @@ def render_tab(tab, tab_idx, search_dict, df) -> dbc.Tab:
 
 
 @app.callback(
+    Output("download-pdf", "data"),
+    Input("download-pdf-btn", "n_clicks"),
+    State("dashboard-state", "data"),
+    State("stored-data", "data"),
+    prevent_initial_call=True,
+)
+def trigger_pdf_download(n, state, data):
+
+    data_js = json.loads(data)
+    df = pd.DataFrame(**data_js)
+    logging.debug(df)
+
+    report = Report(**state)
+    logging.debug(report)
+    pdf_bytes = report.pdf(
+        df=df
+    )
+
+
+    return dcc.send_bytes(pdf_bytes, "report.pdf")
+
+@app.callback(
     Output({'type': 'chart-form', 'tab': MATCH, 'row': MATCH, 'col': MATCH}, 'style'),
     Output({'type': 'table-form', 'tab': MATCH, 'row': MATCH, 'col': MATCH}, 'style'),
     Output({'type': 'stat-form', 'tab': MATCH, 'row': MATCH, 'col': MATCH}, 'style'),
@@ -923,8 +966,8 @@ def toggle_components_form(chart, table, stat):
     State("stored-data", "data")
 )
 def render_tabs(state, data):
-    print("Rendering Tabs")
-    print(f"{data=}")
+    logging.debug("Rendering Tabs")
+    logging.debug(f"{data=}")
     tabs_children = state.get("tabs", []) if isinstance(state, dict) else state
     if data is not None:
         data_js = json.loads(data)
@@ -1032,9 +1075,7 @@ def update_dashboard_state(
         remove_row_clicks,
         remove_tab_clicks,
         add_comp_clicks,
-
         add_chart_btn, x_axis, y_axis_1, y_axis_2, chart_type,
-
         state,
         filename,
         dropdown_values
@@ -1047,7 +1088,7 @@ def update_dashboard_state(
         return dash.no_update
 
     trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
-    print(trigger_id)
+    logging.debug(trigger_id)
     # Initialize state if None
     if state is None:
         state = {"tabs": []}
@@ -1104,7 +1145,7 @@ def update_dashboard_state(
         idx = 0
         for tab_idx, tab in enumerate(tabs):
             for row_idx, row in enumerate(tab['rows']):
-                print(row)
+                logging.debug(row)
                 if idx < len(add_col_clicks) and add_col_clicks[idx] and add_col_clicks[
                     idx] > 0 and f'add-col-btn' in trigger_id and f'"tab":{tab_idx}' in trigger_id and f'"row":{row_idx}' in trigger_id:
                     row['children'].append(
@@ -1133,17 +1174,17 @@ def update_dashboard_state(
                     idx += 1
 
     if "add-chart-btn" in trigger_id:
-        print("ADDING CHART")
+        logging.debug("ADDING CHART")
         idx = 0
-        print(f"{idx=}")
+        logging.debug(f"{idx=}")
 
         for tab_idx, tab in enumerate(tabs):
 
-            print("PROCESSING TAB", tab_idx)
+            logging.debug("PROCESSING TAB", tab_idx)
             for row_idx, row in enumerate(tab['rows']):
-                print(" PROCESSING ROW", row_idx)
+                logging.debug(" PROCESSING ROW", row_idx)
                 for col_idx, col in enumerate(row['children']):
-                    print(" PROCESSING COL", col_idx)
+                    logging.debug(" PROCESSING COL", col_idx)
                     if (
                             # idx < len(add_chart_btn)  and
                             add_chart_btn[idx] and
@@ -1152,7 +1193,7 @@ def update_dashboard_state(
                             and f'"row":{row_idx}' in trigger_id
                             and f'"col":{col_idx}' in trigger_id
                     ):
-                        print("WILL ADD CHILDREN CARD TO COL")
+                        logging.debug("WILL ADD CHILDREN CARD TO COL")
                         col['children'].append(
                             {
                                 'type': 'card',

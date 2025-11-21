@@ -9,6 +9,8 @@ dash-bootstrap-components = "*"
 xmltodict = "*"
 pandas = "*"
 plotly = "*"
+weasyprint = "*"
+kaleido = "*"
 
 [dev-packages]
 pytest = "*"

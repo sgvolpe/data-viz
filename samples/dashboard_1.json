@@ -1,0 +1,64 @@
+{
+  "tabs": [
+    {
+      "id": "5bb4620e-175c-4e34-b22a-002c896d2471",
+      "title": "Tab 1",
+      "rows": [
+        {
+          "type": "row",
+          "children": [
+            {
+              "type": "col",
+              "children": [
+                {
+                  "type": "card",
+                  "component_type": "chart",
+                  "chart_type": "bar",
+                  "x_axis": "Name",
+                  "y_axis_1": "Age",
+                  "y_axis_2": "Department"
+                }
+              ]
+            }, {
+              "type": "col",
+              "children": [
+                {
+                  "type": "card",
+                  "component_type": "chart",
+                  "chart_type": "bar",
+                  "x_axis": "Name",
+                  "y_axis_1": "Age",
+                  "y_axis_2": "Department"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+     {
+      "id": "5bb4620e-175c-4e34-b22a-002c896d2471",
+      "title": "Tab 2",
+      "rows": [
+        {
+          "type": "row",
+          "children": [
+            {
+              "type": "col",
+              "children": [
+                {
+                  "type": "card",
+                  "component_type": "chart",
+                  "chart_type": "bar",
+                  "x_axis": "Name",
+                  "y_axis_1": "Age",
+                  "y_axis_2": "Department"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
