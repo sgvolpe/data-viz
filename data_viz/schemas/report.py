@@ -12,9 +12,7 @@ from io import BytesIO
 from playwright.sync_api import sync_playwright
 import logging
 
-from settings import load_settings
 
-load_settings()
 default_css_files = [
     Path()  / "static" / "css" / "report.css"
 ]
