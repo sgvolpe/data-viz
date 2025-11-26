@@ -59,13 +59,13 @@ RUN pipenv install --deploy --ignore-pipfile
 # ---------------------------
 # Copy Python code
 # ---------------------------
-COPY data_viz /app/data_viz
+COPY frontend /app/data_viz
 
 # ---------------------------
 # Copy CSS files and HTML templates
 # ---------------------------
-COPY data_viz/schemas/*.css /app/data_viz/schemas/
-COPY data_viz/schemas/templates/ /app/data_viz/schemas/templates/
+COPY frontend/schemas/*.css /app/data_viz/schemas/
+COPY frontend/schemas/templates/ /app/data_viz/schemas/templates/
 
 # ---------------------------
 # Install Playwright browsers

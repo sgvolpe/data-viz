@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
-from users import schemas
-from users import models
+from users import schemas, models
 from users.auth import hash_password
 
 
@@ -19,3 +18,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_users(db: Session, skip: int = 0, limit: int = 100):
+    users = db.query(models.User).offset(skip).limit(limit).all()
+    return users

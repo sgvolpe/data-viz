@@ -188,7 +188,7 @@ class Component(BaseModel):
         if ai_describe:
             described_summary = "Not Available"
             try:
-                from services.llm import summarize_chart
+                from llm import summarize_chart
                 described_summary = summarize_chart(
                     df=df,
                     chart_type=self.chart_type,

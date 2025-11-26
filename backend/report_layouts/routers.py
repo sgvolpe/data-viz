@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from report_layouts.models import ReportLayout
 from report_layouts.schemas import ReportLayoutCreate, ReportLayoutRead, ReportLayoutUpdate
 from users.models import User
 from users.routers import get_db
+from report_layouts.models import ReportLayout
 
 router = APIRouter(prefix="/report-layouts", tags=["Report Layouts"])
 

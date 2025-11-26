@@ -16,12 +16,12 @@ import plotly.graph_objects as go
 import logging
 from pathlib import Path
 
-from core.config import settings
+from config import settings
 from schemas.report import Report
 
 
 # --------------------------
-# 3️⃣ User class
+# User class
 # --------------------------
 class DashUser(UserMixin):
     def __init__(self, id, email):
@@ -30,7 +30,7 @@ class DashUser(UserMixin):
 
 
 # --------------------------
-# 2️⃣ Flask + LoginManager (for Dash)
+# Flask + LoginManager (for Dash)
 # --------------------------
 flask_server = Flask(__name__)
 flask_server.secret_key = settings.SECRET_KEY
@@ -52,7 +52,7 @@ def load_user(user_id):
 
 
 # --------------------------
-# 4️⃣ Dash app
+# Dash app
 # --------------------------
 app = dash.Dash(
     __name__,
@@ -310,7 +310,7 @@ def protected_layout():
 
 
 # --------------------------
-# 5️⃣ Dash callbacks
+# Dash callbacks
 # --------------------------
 
 # Page display callback
@@ -336,18 +336,6 @@ def display_page(_, logout_clicks):
         print(exc)
 
 
-# # Logout callback (dynamic element)
-# @app.callback(
-#     Output("page-content", "children"),
-#     Input("logout-button", "n_clicks"),
-#     prevent_initial_call=True
-# )
-# def logout_callback(n):
-#     logout_user()
-#     flask_session.pop("email", None)
-#     return login_layout()
-
-# Login callback
 @app.callback(
     Output("login-alert", "children"),
     Input("login-button", "n_clicks"),
@@ -362,19 +350,20 @@ def process_login(n, email, password):
 
         # Call FastAPI login endpoint
         response = requests.post(
-            "http://127.0.0.1:8000/dash-login",
+            f"{settings.AUTH_HOST}:{settings.AUTH_PORT}/dash-login",
             json={"email": email, "password": password}
         )
         if response.status_code != 200:
-            print(response.text)
-            return dbc.Alert("Invalid credentials.", color="danger")
+            print(f"{response.text=}")
+            return dbc.Alert(f"{response.text=}Invalid credentials.", color="danger")
 
         # Log into Flask/Dash
         user = DashUser(id=email, email=email)
         login_user(user)
         flask_session["email"] = email
         return dcc.Location(href="/dash/", id="redirect")
-    except Exception:
+    except Exception as exc:
+        print(f"{exc=}")
         return dbc.Alert("Server error", color="danger")
 
 
@@ -1374,20 +1363,9 @@ def update_dashboard_state(
     return dash.no_update
 
 
-# todo:
-# # Logout callback (dynamic element)
-# @app.callback(
-#     Output("page-content", "children"),
-#     Input("logout-button", "n_clicks"),
-#     prevent_initial_call=True
-# )
-# def logout_callback(n):
-#     logout_user()
-#     flask_session.pop("email", None)
-#     return login_layout()
-
 # ----------------------------
 # Run Dash
 # ----------------------------
 if __name__ == "__main__":
-    flask_server.run(debug=True, port=settings.DASH_PORT)
+    flask_server.run(debug=True, port=8050)
+

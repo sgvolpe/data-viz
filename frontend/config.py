@@ -9,8 +9,8 @@ class Settings(BaseSettings):
     # GENERAL
     APP_NAME: str = "Data Viz App"
     DEBUG: bool = True
-    HOST: str = "127.0.0.1"
-    FASTAPI_PORT: str = "8000"
+    AUTH_HOST: str = "http://127.0.0.1"
+    AUTH_PORT: str = "8000"
     DASH_PORT: str = "8050"
 
     # DATABASE

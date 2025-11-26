@@ -1,10 +1,14 @@
 # routers.py
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+
 from database import SessionLocal
-from users import schemas
-from users import services
-from users.auth import verify_password, create_access_token
+
+from users import schemas, services
+from users.auth import create_access_token, verify_password
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -32,3 +36,9 @@ def login_user(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
 
     token = create_access_token(user.id)
     return {"access_token": token, "token_type": "bearer"}
+
+
+# Read all
+@router.get("/", response_model=List[schemas.UserRead])
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return services.get_users(db, skip=skip, limit=limit)

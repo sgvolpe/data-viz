@@ -1,5 +1,5 @@
 # models.py
-from sqlalchemy import Column, String, Boolean, DateTime, JSON, ForeignKey
+from sqlalchemy import Column, String, DateTime, JSON, ForeignKey
 from uuid import uuid4
 from datetime import datetime
 
@@ -15,6 +15,6 @@ class ReportLayout(Base):
     uid = Column(String, unique=True, nullable=False, index=True)
 
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    user = relationship("User", back_populates="report_layouts")
+    # user = relationship("User", back_populates="report_layouts")
 
     config = Column(JSON, nullable=False)  # store JSON configuration

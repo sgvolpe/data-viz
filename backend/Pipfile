@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+itsdangerous = "*"
+sqlalchemy = "*"
+pydantic-settings = "*"
+pydantic = {extras = ["email"], version = "*"}
+pyjwt = "*"
+passlib = "*"
+uvicorn = "*"
+bcrypt = "==3.2.2"
+
+[dev-packages]
+httpx = "*"
+
+[requires]
+python_version = "3.14"

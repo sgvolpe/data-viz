@@ -136,7 +136,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-data_viz/core/.env
+../../Users/sgvol/projects/data-viz-backend/backend/.env
 .envrc
 .venv
 env/
@@ -206,5 +206,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-/data_viz/core/.env
-/data_viz/app.db
+/backend/core/.env
+/backend/app.db
+/.pylintrc
